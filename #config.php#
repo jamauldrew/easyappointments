@@ -30,7 +30,7 @@ class Config
     // GENERAL SETTINGS
     // ------------------------------------------------------------------------
 
-    const BASE_URL = 'http://localhost';
+    const BASE_URL = 'http://localhost/easyappointments'; // Update this to your base URL
     const LANGUAGE = 'english';
     const DEBUG_MODE = false;
 
@@ -38,10 +38,10 @@ class Config
     // DATABASE SETTINGS
     // ------------------------------------------------------------------------
 
-    const DB_HOST = 'mysql';
-    const DB_NAME = 'easyappointments';
-    const DB_USERNAME = 'user';
-    const DB_PASSWORD = 'password';
+    const DB_HOST = 'localhost'; // Change to your database host, e.g., 'localhost'
+    const DB_NAME = 'easyappointments'; // Database name you created
+    const DB_USERNAME = 'root'; // Your database username
+    const DB_PASSWORD = ''; // Your database password
 
     // ------------------------------------------------------------------------
     // GOOGLE CALENDAR SYNC
@@ -51,3 +51,4 @@ class Config
     const GOOGLE_CLIENT_ID = '';
     const GOOGLE_CLIENT_SECRET = '';
 }
+

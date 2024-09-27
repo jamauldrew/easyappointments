@@ -55,5 +55,8 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
+    },
+    "config": {
+        "process-timeout": 3600
     }
 }
