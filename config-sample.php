@@ -30,7 +30,7 @@ class Config
     // GENERAL SETTINGS
     // ------------------------------------------------------------------------
 
-    const BASE_URL = 'https://easyappointments.herokuapp.com'; // Update this to your base URL
+    const BASE_URL = 'https://easyappointments-abc994b31e34.herokuapp.com'; // Update this to your base URL
     const LANGUAGE = 'english';
     const DEBUG_MODE = false;
 
