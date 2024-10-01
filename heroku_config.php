@@ -3,7 +3,13 @@
 $dbopts = parse_url(getenv('JAWSDB_URL'));
 
 // Replace placeholders in Config class with actual values
-$configFile = file_get_contents(__DIR__ . '/config.php');
+if (file_exists(__DIR__ . '/config.php')) {
+    $configFile = file_get_contents(__DIR__ . '/config.php');
+} else {
+    error_log('Config file does not exist. Creating a new one from the sample.');
+    copy(__DIR__ . '/config-sample.php', __DIR__ . '/config.php');
+    $configFile = file_get_contents(__DIR__ . '/config-sample.php');
+}
 $configFile = str_replace('HEROKU_DB_HOST', $dbopts['host'], $configFile);
 $configFile = str_replace('HEROKU_DB_NAME', ltrim($dbopts['path'], '/'), $configFile);
 $configFile = str_replace('HEROKU_DB_USERNAME', $dbopts['user'], $configFile);
