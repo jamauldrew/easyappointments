@@ -24,24 +24,25 @@
  * If you are updating from version 1.0 you will have to create a new "config.php"
  * file because the old "configuration.php" is not used anymore.
  */
+
 class Config
 {
     // ------------------------------------------------------------------------
     // GENERAL SETTINGS
     // ------------------------------------------------------------------------
 
-    const BASE_URL = 'https://easyappointments-abc994b31e34.herokuapp.com'; // Update this to your base URL
+    const BASE_URL = BASE_URL;
     const LANGUAGE = 'english';
-    const DEBUG_MODE = false;
+    const DEBUG_MODE = DEBUG_MODE;
 
     // ------------------------------------------------------------------------
     // DATABASE SETTINGS
     // ------------------------------------------------------------------------
 
     // DATABASE SETTINGS
-    const DB_HOST = 'HEROKU_DB_HOST'; // These placeholders will be replaced
-    const DB_NAME = 'HEROKU_DB_NAME'; // with actual values from environment
-    const DB_USERNAME = 'HEROKU_DB_USERNAME'; // variables when the app runs
+    const DB_HOST = 'HEROKU_DB_HOST';
+    const DB_NAME = 'HEROKU_DB_NAME';
+    const DB_USERNAME = 'HEROKU_DB_USERNAME';
     const DB_PASSWORD = 'HEROKU_DB_PASSWORD';
 
     // const DB_HOST = 'sql101.infinityfree.com'; // Change to your database host, e.g., 'localhost'
