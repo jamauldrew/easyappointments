@@ -17,15 +17,7 @@
         "wiki": "https://easyappointments.org/docs",
         "source": "https://github.com/alextselegidis/easyappointments"
     },
-    "keywords": [
-        "calendar",
-        "scheduler",
-        "appointments",
-        "events",
-        "dates",
-        "google",
-        "services"
-    ],
+    "keywords": ["calendar", "scheduler", "appointments", "events", "dates", "google", "services"],
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.1",

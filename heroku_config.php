@@ -1,6 +1,4 @@
 <?php
-// Parse database URL
-$dbopts = parse_url(getenv('JAWSDB_URL'));
 
 // Check if config.php exists
 if (file_exists(__DIR__ . '/config.php')) {
@@ -23,11 +21,38 @@ if (file_exists(__DIR__ . '/config.php')) {
     }
 }
 
-// Replace placeholders in the configuration with actual values
-$configFile = str_replace('HEROKU_DB_HOST', $dbopts['host'], $configFile);
-$configFile = str_replace('HEROKU_DB_NAME', ltrim($dbopts['path'], '/'), $configFile);
-$configFile = str_replace('HEROKU_DB_USERNAME', $dbopts['user'], $configFile);
-$configFile = str_replace('HEROKU_DB_PASSWORD', $dbopts['pass'], $configFile);
+// Load environment variables from .env file if it exists (for local development)
+if (file_exists(__DIR__ . '/.env')) {
+    $envFile = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($envFile as $line) {
+        if (strpos($line, '=') !== false) {
+            list($key, $value) = explode('=', $line, 2);
+            putenv("$key=$value");
+            $_ENV[$key] = $value;
+            $_SERVER[$key] = $value;
+        }
+    }
+}
 
-// Write the updated config back to the file
-file_put_contents(__DIR__ . '/config.php', $configFile);
+// Determine the environment
+$app_env = getenv('APP_ENV') ?: 'production';
+
+if ($app_env === 'production') {
+    // Parse database URL for production (Heroku)
+    $dbopts = parse_url(getenv('JAWSDB_URL'));
+
+    define('HEROKU_DB_HOST', $dbopts['host']);
+    define('HEROKU_DB_NAME', ltrim($dbopts['path'], '/'));
+    define('HEROKU_DB_USERNAME', $dbopts['user']);
+    define('HEROKU_DB_PASSWORD', $dbopts['pass']);
+    define('BASE_URL', 'https://easyappointments-abc994b31e34.herokuapp.com');
+    define('DEBUG_MODE', false);
+} else {
+    // Use local environment variables for development
+    define('HEROKU_DB_HOST', getenv('DB_HOST'));
+    define('HEROKU_DB_NAME', getenv('DB_NAME'));
+    define('HEROKU_DB_USERNAME', getenv('DB_USERNAME'));
+    define('HEROKU_DB_PASSWORD', getenv('DB_PASSWORD'));
+    define('BASE_URL', getenv('BASE_URL'));
+    define('DEBUG_MODE', getenv('DEBUG_MODE') === 'true');
+}

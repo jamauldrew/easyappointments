@@ -1,0 +1,655 @@
+#+title: README
+#+title: README
+#+TITLE: EasyAppointments Project Setup and Usage Instructions
+#+AUTHOR: Project Maintainer
+#+DESCRIPTION: A comprehensive guide to setting up, developing, and testing the EasyAppointments project locally and on Heroku.
+
+* EasyAppointments: Open Source Appointment Scheduler
+EasyAppointments is a powerful, highly customizable web application that allows customers to book appointments via a sophisticated web interface. It provides Google Calendar synchronization and supports commercial use. The project can be installed on any server, sharing an existing database and integrating seamlessly into your website.
+
+** Key Features
+- Customers and appointments management.
+- Services and providers organization.
+- Working plan and booking rules.
+- Google Calendar synchronization.
+- Email notifications system.
+- Self-hosted installation.
+- Translated user interface.
+- User community support.
+
+** Prerequisites
+- PHP >= 8.2, Composer, MySQL for database.
+- Git and Node.js (with npm) installed.
+- XAMPP or LAMPP installed for local development.
+- Heroku CLI installed for deployment.
+
+** Local Development Setup
+
+Start XAMPP (or LAMPP):
+#+BEGIN_SRC bash
+sudo /opt/lampp/lampp start
+#+END_SRC
+Navigate to the project directory:
+#+BEGIN_SRC bash
+cd /opt/lampp/htdocs/easyappointments
+#+END_SRC
+Set up local configuration:
+
+Copy config-sample.php to config.php.
+Run the setup script to create .env file and clone Heroku database:
+#+BEGIN_SRC bash
+./setup_local_env.sh
+#+END_SRC
+
+This script will:
+
+Fetch the Heroku database URL
+Create a .env file with the database credentials
+Clone the Heroku database schema to your local machine
+
+
+Set correct permissions:
+If you've moved the project folder outside of the XAMPP htdocs directory, ensure proper permissions:
+#+BEGIN_SRC bash
+sudo chown -R $USER:$(id -gn $USER) /path/to/your/project/folder
+chmod -R 755 /path/to/your/project/folder
+chmod -R 777 /path/to/your/project/folder/storage
+#+END_SRC
+Install project dependencies:
+#+BEGIN_SRC bash
+composer install
+npm install
+#+END_SRC
+Start the project:
+
+Open the project in your web browser at:
+#+BEGIN_SRC
+http://localhost/easyappointments
+#+END_SRC
+Optionally, start the file watcher for automated builds:
+#+BEGIN_SRC bash
+npm start
+#+END_SRC
+
+
+
+** Heroku Deployment and Database Management
+*** Command Reference Table
+
+- *JawsDB (MySQL) Commands*
+| Operation                  | Command                                                                                    |
+|----------------------------+--------------------------------------------------------------------------------------------|
+| List Heroku apps           | ~heroku apps~                                                                              |
+| Check database add-on      | ~heroku addons --app your-app-name~                                                        |
+| Get database URL           | ~heroku config:get JAWSDB_URL --app your-app-name~                                         |
+| Dump Heroku database       | ~mysqldump -h host -u username -ppassword database_name > heroku_database_backup.sql~      |
+| Create local database      | ~CREATE DATABASE local_database_name;~                                                     |
+| Import to local database   | ~mysql -u your_local_username -p local_database_name < heroku_database_backup.sql~         |
+| Connect to Heroku database | ~mysql -h host -u username -ppassword database_name~                                       |
+
+- *PostgreSQL Commands (for reference)*
+| Operation                  | Command                                                                                    |
+|----------------------------+--------------------------------------------------------------------------------------------|
+| Pull database to local     | ~heroku pg:pull DATABASE_URL local_database_name --app your-app-name~                      |
+| Push local to Heroku       | ~heroku pg:push local_database_name DATABASE_URL --app your-app-name~                      |
+| Connect to Heroku database | ~heroku pg:psql --app your-app-name~                                                       |
+
+*** Prerequisites
+  - Heroku CLI installed and authenticated
+  - MySQL or PostgreSQL installed on your local machine (as applicable)
+  - Access to your Heroku app
+
+*** Steps for JawsDB (MySQL) Setup
+
+**** 1. Identify your Heroku app
+   #+BEGIN_SRC bash
+   heroku apps
+   #+END_SRC
+
+**** 2. Verify the database add-on
+   #+BEGIN_SRC bash
+   heroku addons --app your-app-name
+   #+END_SRC
+
+**** 3. Get the JawsDB connection URL
+   #+BEGIN_SRC bash
+   heroku config:get JAWSDB_URL --app your-app-name
+   #+END_SRC
+
+**** 4. Parse the connection URL
+   Format: ~mysql://username:password@host:port/database_name~
+
+**** 5. Dump the Heroku database
+   #+BEGIN_SRC bash
+   mysqldump -h host -u username -ppassword database_name > heroku_database_backup.sql
+   #+END_SRC
+
+**** 6. Create a local database
+   #+BEGIN_SRC sql
+   CREATE DATABASE local_database_name;
+   #+END_SRC
+
+**** 7. Import the database dump to your local system
+   #+BEGIN_SRC bash
+   mysql -u your_local_username -p local_database_name < heroku_database_backup.sql
+   #+END_SRC
+
+**** 8. Update your local configuration
+   Update your local ~.env~ file or configuration to use the local database.
+
+**** 9. Verify the import
+   #+BEGIN_SRC sql
+   USE local_database_name;
+   SHOW TABLES;
+   -- Run queries to verify data
+   #+END_SRC
+
+*** Additional Notes
+  - Replace placeholder values (e.g., ~your-app-name~, ~username~, ~password~) with your actual credentials.
+  - Keep your database credentials secure and never commit them to version control.
+  - For PostgreSQL databases, Heroku provides built-in commands for pulling and pushing databases, which are simpler to use than the manual process required for MySQL.
+
+*** Troubleshooting
+  - If you encounter permission issues, ensure your local MySQL user has sufficient privileges.
+  - For large databases, you may need to increase timeout settings or use compression during transfer.
+  - If you're using a MySQL version different from Heroku's, be aware of potential compatibility issues.
+
+Remember to adapt these instructions based on your specific setup and requirements.
+
+#+BEGIN_QUOTE
+**** Heroku MySQL (JawsDB) Database Setup for Local Development
+#+END_QUOTE
+This guide will walk you through the process of pulling your Heroku MySQL database to your local system for development purposes.
+
+#+BEGIN_QUOTE
+**** Prerequisites
+#+END_QUOTE
+  - Heroku CLI installed and authenticated
+  - MySQL installed on your local machine
+  - Access to your Heroku app
+
+#+BEGIN_QUOTE
+**** Steps
+#+END_QUOTE
+
+1. **Identify your Heroku app**
+
+   List all your Heroku apps:
+   #+BEGIN_SRC bash
+   heroku apps
+   #+END_SRC
+
+   Example output:
+
+=== jamauldrew@gmail.com Apps
+easyappointments
+
+2. **Verify the database add-on**
+
+Check the add-ons for your specific app:
+#+BEGIN_SRC bash
+heroku addons --app easyappointments
+#+END_SRC
+
+Example output:
+
+Add-on                     Plan    Price Max price State
+────────────────────────── ─────── ───── ───────── ───────
+jawsdb (jawsdb-deep-56272) kitefin free  free      created
+└─ as JAWSDB
+
+3. **Get the JawsDB connection URL**
+
+Retrieve the MySQL connection URL:
+#+BEGIN_SRC bash
+heroku config:get JAWSDB_URL --app easyappointments
+#+END_SRC
+
+Example output:
+
+mysql://fz4g6qvnxq2pw9ti:bagypoow7nepka6t@mgs0iaapcj3p9srz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/zy7v021nh7eu997p
+
+4. **Parse the connection URL**
+
+The URL format is: `mysql://username:password@host:port/database_name`
+
+From the example:
+- Username: `fz4g6qvnxq2pw9ti`
+- Password: `bagypoow7nepka6t`
+- Host: `mgs0iaapcj3p9srz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com`
+- Port: `3306`
+- Database name: `zy7v021nh7eu997p`
+
+5. **Dump the Heroku database**
+
+Use the `mysqldump` command to create a backup of your Heroku database:
+#+BEGIN_SRC bash
+mysqldump -h mgs0iaapcj3p9srz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com -u fz4g6qvnxq2pw9ti -pbagypoow7nepka6t zy7v021nh7eu997p > heroku_database_backup.sql
+#+END_SRC
+
+6. **Create a local database**
+
+Log into your local MySQL server and create a new database:
+#+BEGIN_SRC sql
+CREATE DATABASE local_easyappointments;
+#+END_SRC
+
+7. **Import the database dump to your local system**
+
+Import the dumped data into your local database:
+#+BEGIN_SRC bash
+mysql -u your_local_username -p local_easyappointments < heroku_database_backup.sql
+#+END_SRC
+
+8. **Update your local configuration**
+
+Update your local `.env` file or configuration to use the local database:
+
+DB_HOST=localhost
+DB_NAME=local_easyappointments
+DB_USERNAME=your_local_username
+DB_PASSWORD=your_local_password
+
+9. **Verify the import**
+
+Connect to your local MySQL and check the imported data:
+#+BEGIN_SRC sql
+USE local_easyappointments;
+SHOW TABLES;
+-- Run queries to verify data
+#+END_SRC
+
+*** Additional Heroku Database Commands
+
+- View database information:
+#+BEGIN_SRC bash
+heroku addons:docs jawsdb
+#+END_SRC
+
+- Connect to Heroku database (if needed):
+#+BEGIN_SRC bash
+mysql -h mgs0iaapcj3p9srz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com -u fz4g6qvnxq2pw9ti -pbagypoow7nepka6t zy7v021nh7eu997p
+#+END_SRC
+
+Remember to replace the placeholder values (like `your_local_username` and `your_local_password`) with your actual local MySQL credentials.
+
+**Note**: Keep your database credentials secure and never commit them to version control.
+
+** Heroku Commands CLI
+Log into Heroku via CLI:
+#+BEGIN_SRC bash
+heroku login
+#+END_SRC
+Prepare for deployment:
+
+Create a Procfile in the project root with the following content:
+#+BEGIN_SRC
+web: php heroku_config.php && vendor/bin/heroku-php-apache2 .
+#+END_SRC
+Set Heroku environment variables:
+#+BEGIN_SRC bash
+heroku config:set APP_ENV=production
+heroku config:set BASE_URL=https://your-app-name.herokuapp.com
+heroku config:set DEBUG_MODE=false
+#+END_SRC
+
+
+Deploy the project to Heroku:
+#+BEGIN_SRC bash
+git add .
+git commit -m "Deploy to Heroku"
+git push heroku main
+#+END_SRC
+Set up the database with JawsDB:
+#+BEGIN_SRC bash
+heroku addons:create jawsdb:kitefin
+#+END_SRC
+Database Management:
+
+Push local database to Heroku:
+#+BEGIN_SRC bash
+heroku pg:push your_local_db_name DATABASE_URL --app your-heroku-app-name
+#+END_SRC
+Pull Heroku database to local:
+#+BEGIN_SRC bash
+heroku pg:pull DATABASE_URL your_local_db_name --app your-heroku-app-name
+#+END_SRC
+View Heroku database information:
+#+BEGIN_SRC bash
+heroku pg:info
+#+END_SRC
+Connect to Heroku database:
+#+BEGIN_SRC bash
+heroku pg:psql
+#+END_SRC
+
+
+Open the project in the browser:
+#+BEGIN_SRC bash
+heroku open
+#+END_SRC
+
+**Enhanced Heroku CLI Commands**
+
+- **View Heroku logs:**
+  ```bash
+  heroku logs --tail
+  ```
+
+- **View Heroku app files:**
+  ```bash
+  ```
+
+# Heroku CLI Commands and Database Management
+
+## Essential Heroku CLI Commands
+
+| Command                      | Description          |
+|------------------------------+----------------------|
+| `heroku logs --tail`         | View real-time logs  |
+| `heroku run ls -la`          | List app files       |
+| `heroku run cat <file_name>` | View file contents   |
+| `heroku run bash`            | Access Heroku Bash   |
+| `heroku ps:scale web=1`      | Scale dynos          |
+| `heroku apps:info`           | View app information |
+
+## Database Operations
+
+### Pulling Heroku Database to Local System
+
+1. **Identify your Heroku app**:
+   ```bash
+   heroku apps
+   ```
+
+2. **Check database add-on**:
+   ```bash
+   heroku addons --app your-heroku-app-name
+   ```
+
+3. **Set up local database**:
+   - PostgreSQL: `createdb your_local_db_name`
+   - MySQL: `CREATE DATABASE your_local_db_name;`
+
+4. **Pull database**:
+   - PostgreSQL:
+     ```bash
+     heroku pg:pull DATABASE_URL your_local_db_name --app your-heroku-app-name
+     ```
+   - MySQL (JawsDB):
+     ```bash
+     heroku config:get JAWSDB_URL --app your-heroku-app-name
+     ```
+     Then manually dump and import using the provided connection details.
+
+5. **Update local `.env` file**:
+   ```
+   DB_HOST=localhost
+   DB_NAME=your_local_db_name
+   DB_USERNAME=your_local_db_username
+   DB_PASSWORD=your_local_db_password
+   ```
+
+### Pushing Local Database to Heroku
+
+```bash
+heroku pg:push your_local_db_name DATABASE_URL --app your-heroku-app-name
+```
+
+Note: Replace placeholders like `your-heroku-app-name` and `your_local_db_name` with actual values. For non-standard database add-ons, refer to their specific documentation.
+
+** Configuration Files
+
+- `config.php`: This file should contain your local development variables. It's not pushed to Heroku.
+- `heroku_config.php`: This file is used in production on Heroku. It reads environment variables set through the Heroku dashboard or CLI.
+- `.env`: This file contains your local environment variables. It's in .gitignore and not pushed to Heroku.
+
+The `heroku_config.php` file ensures that your Heroku environment uses the correct variables at runtime. It typically looks like this:
+
+#+BEGIN_SRC php
+<?php
+define('BASE_URL', getenv('BASE_URL'));
+define('DB_HOST', getenv('JAWSDB_URL') ? parse_url(getenv('JAWSDB_URL'))['host'] : getenv('DB_HOST'));
+define('DB_NAME', getenv('JAWSDB_URL') ? ltrim(parse_url(getenv('JAWSDB_URL'))['path'], '/') : getenv('DB_NAME'));
+define('DB_USERNAME', getenv('JAWSDB_URL') ? parse_url(getenv('JAWSDB_URL'))['user'] : getenv('DB_USERNAME'));
+define('DB_PASSWORD', getenv('JAWSDB_URL') ? parse_url(getenv('JAWSDB_URL'))['pass'] : getenv('DB_PASSWORD'));
+define('DEBUG_MODE', getenv('DEBUG_MODE') === 'true');
+#+END_SRC
+
+This setup allows your application to use local variables during development and Heroku environment variables in production.
+
+** Testing and Debugging
+
+1. **Run unit tests using PHPUnit:**
+   #+BEGIN_SRC bash
+   vendor/bin/phpunit
+   #+END_SRC
+
+2. **Enable debug mode in `.env` for local development:**
+   #+BEGIN_SRC
+   DEBUG_MODE=true
+   #+END_SRC
+
+3. **Check Heroku logs for errors:**
+   #+BEGIN_SRC bash
+   heroku logs --tail
+   #+END_SRC
+
+** Development Workflow
+- Use `git` to manage your project versioning:
+  #+BEGIN_SRC bash
+  git add .
+  git commit -m "Your message"
+  git push origin main
+  #+END_SRC
+
+- To deploy changes to Heroku:
+  #+BEGIN_SRC bash
+  git push heroku main
+  #+END_SRC
+
+** Heroku Deployment and Rollback
+
+*** Key Commands for Deployment and Rollback
+
+| Command                             | Description                                   |
+|-------------------------------------+-----------------------------------------------|
+| git push heroku main                | Deploy your local changes to Heroku           |
+| heroku logs --tail                  | Monitor real-time deployment logs             |
+| heroku rollback                     | Rollback to the previous release              |
+| heroku releases                     | List recent Heroku releases                   |
+| heroku rollback v<version_number>   | Rollback to a specific release version        |
+| heroku open                         | Open the app in a browser                     |
+| heroku git:remote -a <dev-app>      | Set up a remote for a development Heroku app  |
+| git push heroku-dev main            | Deploy to development environment             |
+| heroku local web                    | Test the app locally using Heroku environment |
+| git fetch heroku                    | Fetch the current Heroku app state            |
+| git push heroku <branch>:main       | Push a branch to Heroku                       |
+| heroku pipelines:add                | Add a review app to Heroku pipeline           |
+| heroku ci:config:set                | Set up Heroku CI/CD configuration             |
+
+*** Deploying to Heroku
+
+1. Before deploying, ensure all changes are committed:
+   #+BEGIN_SRC bash
+   git status
+   git add .
+   git commit -m "Prepare for deployment"
+   #+END_SRC
+
+2. Push to Heroku:
+   #+BEGIN_SRC bash
+   git push heroku main
+   #+END_SRC
+
+3. Monitor the deployment logs:
+   #+BEGIN_SRC bash
+   heroku logs --tail
+   #+END_SRC
+
+*** Handling Failed Deployments
+
+If your deployment fails or the application doesn't work as expected after deployment, follow these steps:
+
+1. Check the logs for error messages:
+   #+BEGIN_SRC bash
+   heroku logs --tail
+   #+END_SRC
+
+2. If you need to rollback to the previous version:
+   #+BEGIN_SRC bash
+   heroku rollback
+   #+END_SRC
+
+3. To rollback to a specific version, first list your releases:
+   #+BEGIN_SRC bash
+   heroku releases
+   #+END_SRC
+
+   Then rollback to a specific release:
+   #+BEGIN_SRC bash
+   heroku rollback v<version_number>
+   #+END_SRC
+
+4. After rolling back, verify the application state:
+   #+BEGIN_SRC bash
+   heroku open
+   heroku logs --tail
+   #+END_SRC
+
+*** Managing Multiple Environments
+
+To manage separate development and production environments:
+
+1. Add a development remote (if not already set up):
+   #+BEGIN_SRC bash
+   heroku git:remote -a your-dev-app-name -r heroku-dev
+   #+END_SRC
+
+2. Deploy to development:
+   #+BEGIN_SRC bash
+   git push heroku-dev main
+   #+END_SRC
+
+3. Deploy to production:
+   #+BEGIN_SRC bash
+   git push heroku main
+   #+END_SRC
+
+*** Testing Changes Locally Before Deployment
+
+To test your Heroku configuration locally:
+
+1. Install the Heroku Local CLI plugin:
+   #+BEGIN_SRC bash
+   heroku plugins:install heroku-local
+   #+END_SRC
+
+2. Create a .env file in your project root with your local environment variables.
+
+3. Run your app locally using Heroku's environment:
+   #+BEGIN_SRC bash
+   heroku local web
+   #+END_SRC
+
+This allows you to test your app in an environment similar to Heroku before actually deploying.
+
+*** Additional Safeguards
+
+1. Use review apps for testing pull requests:
+   #+BEGIN_SRC bash
+   heroku apps:create your-review-app-name
+   heroku pipelines:add your-pipeline-name -a your-review-app-name -s development
+   #+END_SRC
+
+2. Set up automated CI/CD with Heroku CI:
+   #+BEGIN_SRC bash
+   heroku ci:config:set -p your-pipeline-name NPM_CONFIG_PRODUCTION=false
+   #+END_SRC
+
+*** Syncing Local Changes with Heroku and Git Remotes (When They’re Out of Sync)
+
+If your Heroku app has changes that aren't reflected in your local Git repository, and your local environment has untracked changes that need to be cautiously deployed, follow this process:
+
+1. **Backup the Current Heroku State**
+
+   Before making any changes, backup the current Heroku state by creating a new branch in Git based on the current Heroku deployment:
+   #+BEGIN_SRC bash
+   git fetch heroku
+   git checkout -b heroku-backup heroku/main
+   #+END_SRC
+
+   This creates a local branch (heroku-backup) reflecting the current Heroku app, which can be used to revert if needed.
+
+2. **Pull Latest Changes from Heroku**
+
+   To sync your local repository with the Heroku repository (ahead of your local Git remote):
+   #+BEGIN_SRC bash
+   git pull heroku main
+   #+END_SRC
+
+3. **Review Local Changes**
+
+   Now review your local uncommitted changes:
+   #+BEGIN_SRC bash
+   git status
+   git diff
+   #+END_SRC
+
+   Ensure you understand the differences between your local environment and the pulled Heroku changes.
+
+4. **Commit Local Changes to a New Branch**
+
+   To isolate your local work, commit your changes to a new feature branch:
+   #+BEGIN_SRC bash
+   git checkout -b feature-branch
+   git add .
+   git commit -m "Local changes"
+   #+END_SRC
+
+5. **Merge Heroku Changes into the Feature Branch**
+
+   To combine your local changes with the current Heroku state:
+   #+BEGIN_SRC bash
+   git merge heroku/main
+   #+END_SRC
+
+   If there are conflicts, resolve them manually. This will allow you to bring your local and Heroku repositories back into sync.
+
+6. **Push Changes to Heroku**
+
+   Once the merge is complete and stable:
+   #+BEGIN_SRC bash
+   git push heroku feature-branch:main
+   #+END_SRC
+
+   Monitor the deployment logs as usual:
+   #+BEGIN_SRC bash
+   heroku logs --tail
+   #+END_SRC
+
+7. **Revert to the Heroku Backup If Needed**
+
+   If the changes cause issues and you need to revert to the previous Heroku state:
+   #+BEGIN_SRC bash
+   git push heroku heroku-backup:main
+   #+END_SRC
+
+8. **Update Git Remote**
+
+   After everything is stable on Heroku, update your Git remote to reflect the current state:
+   #+BEGIN_SRC bash
+   git checkout main
+   git merge feature-branch
+   git push origin main
+   #+END_SRC
+
+Remember, always test thoroughly in a staging environment before deploying to production. If you're unsure
+** License
+- Code: Licensed under GPL v3.0.
+- Content: Licensed under CC BY 3.0.
+
+For more information, visit:
+- Website: https://easyappointments.org
+- GitHub: https://github.com/alextselegidis/easyappointments
+- Twitter: @alextselegidis

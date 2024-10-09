@@ -1,0 +1,68 @@
+=== GIT CONFIGURATION ===
+user.name=jamauldrew
+user.email=jamauldrew@gmail.com
+alias.cm=!f() { git commit -m "$1"; }; f
+alias.feat=!f() { git commit -m "feat($1): $2"; }; f
+alias.fix=!f() { git commit -m "fix($1): $2"; }; f
+alias.docs=!f() { git commit -m "docs($1): $2"; }; f
+alias.style=!f() { git commit -m "style($1): $2"; }; f
+alias.refactor=!f() { git commit -m "refactor($1): $2"; }; f
+alias.test=!f() { git commit -m "test($1): $2"; }; f
+commit.template=~/.gitmessage.txt
+http.postbuffer=524288000
+http.sslverify=true
+http.sslbackend=gnutls
+credential.https://github.com.helper=
+credential.https://github.com.helper=!/mnt/e/MyTools/miniforge3/envs/qaqcTK/bin/gh auth git-credential
+credential.https://gist.github.com.helper=
+credential.https://gist.github.com.helper=!/mnt/e/MyTools/miniforge3/envs/qaqcTK/bin/gh auth git-credential
+url.https://.insteadof=git://
+core.repositoryformatversion=0
+core.filemode=false
+core.bare=false
+core.logallrefupdates=true
+core.ignorecase=true
+remote.origin.url=https://github.com/jamauldrew/easyappointments
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+remote.heroku.url=https://git.heroku.com/easyappointments.git
+remote.heroku.fetch=+refs/heads/*:refs/remotes/heroku/*
+=== GIT STATUS ===
+On branch main
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	deleted:    .dir-locals.el
+	new file:   README.org
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.org
+	modified:   composer.json
+	modified:   composer.lock
+	modified:   heroku_config.php
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	heroku_database_backup.sql
+	setup_local_env.sh
+	system_info.txt
+
+=== GIT REMOTE ===
+heroku	https://git.heroku.com/easyappointments.git (fetch)
+heroku	https://git.heroku.com/easyappointments.git (push)
+origin	https://github.com/jamauldrew/easyappointments (fetch)
+origin	https://github.com/jamauldrew/easyappointments (push)
+=== HEROKU APPS ===
+=== jamauldrew@gmail.com Apps
+
+easyappointments
+=== HEROKU CONFIG ===
+=== easyappointments Config Vars
+
+JAWSDB_URL: mysql://fz4g6qvnxq2pw9ti:bagypoow7nepka6t@mgs0iaapcj3p9srz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/zy7v021nh7eu997p
+=== LOCAL UNTRACKED FILES ===
+heroku_database_backup.sql
+setup_local_env.sh
+system_info.txt
+=== HEROKU GIT URL ===
+git_url=https://git.heroku.com/easyappointments.git
